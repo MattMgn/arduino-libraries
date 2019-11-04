@@ -35,6 +35,7 @@ struct SphericalCalib {
     float y_vec[SPHERICAL_MAX_SAMPLE_NB];
     float z_vec[SPHERICAL_MAX_SAMPLE_NB];
     float s_vec[SPHERICAL_MAX_SAMPLE_NB];
+    float A_matrix[SPHERICAL_MAX_SAMPLE_NB][4];
     float timeout;
     int sample_nb;
 };

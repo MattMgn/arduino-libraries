@@ -87,12 +87,33 @@ void LibImuSphericalCalibFeedVectors(struct SphericalCalib *calib, float x, floa
         calib->z_vec[calib->sample_nb] = z;
 
         calib->s_vec[calib->sample_nb] = x*x + y*y +z*z;
-
+        calib->A_matrix[i][0] = 2.0 * x;
+        calib->A_matrix[i][1] = 2.0 * y;
+        calib->A_matrix[i][2] = 2.0 * z;
+        calib->A_matrix[i][3] = 1.0;
 
     }
 }
 
 void LibImuSphericalCalibInit(struct SphericalCalib *calib)
 {
+    int err;
+    int nrows = calib->sample_nb;
+    int ncols = 4;
+
+    double* dummy_array;
+    double U[nrows][ncols];
+    double V[ncols][ncols];
+    double singular_values[ncols];
+    double Astar[ncols][nrows];
+
+    dummy_array = (double*) malloc(ncols * sizeof(double)); 
+
+    Singular_Value_Decomposition((double*) calib->A_matrix, nrows, ncols, (double*)U,
+                                  singular_values, (double*)V, dummy_array);
+
+    Singular_Value_Decomposition_Inverse((double*)U, singular_values, (double*)V,
+                                         singular_values[0] * DBL_EPSILON * ncols, nrows, ncols,
+                                         (double*) Astar);
 
 }
